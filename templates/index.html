@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Music Downloader</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1>YouTube Music Liked Playlist Downloader</h1>
+        <p>Paste your playlist URL, choose a folder, and click <strong>Sync Playlist</strong>.</p>
+      </header>
+
+      <section class="card">
+        <form method="post" action="{{ url_for('sync') }}">
+          <label>Playlist URL</label>
+          <input name="playlist_url" value="{{ config.playlist_url }}" placeholder="https://music.youtube.com/playlist?list=..." required />
+
+          <div class="grid-two">
+            <div>
+              <label>Output folder</label>
+              <input name="output_dir" value="{{ config.output_dir }}" required />
+            </div>
+            <div>
+              <label>Archive file</label>
+              <input name="archive_file" value="{{ config.archive_file }}" required />
+            </div>
+          </div>
+
+          <div class="grid-three">
+            <div>
+              <label>Audio format</label>
+              <select name="audio_format">
+                <option value="m4a" {% if config.audio_format == 'm4a' %}selected{% endif %}>m4a (faster)</option>
+                <option value="mp3" {% if config.audio_format == 'mp3' %}selected{% endif %}>mp3</option>
+              </select>
+            </div>
+            <div>
+              <label>Audio quality</label>
+              <input name="audio_quality" value="{{ config.audio_quality }}" />
+            </div>
+            <div>
+              <label>Cookies from browser (optional)</label>
+              <input name="cookies_from_browser" value="{{ config.cookies_from_browser }}" placeholder="chrome / firefox / edge" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <label class="checkbox"><input type="checkbox" name="save_defaults" checked /> Save as defaults</label>
+            <button type="submit">Sync Playlist</button>
+          </div>
+        </form>
+
+        <form method="post" action="{{ url_for('reset_defaults') }}" class="reset-form">
+          <button type="submit" class="secondary">Reset saved defaults</button>
+        </form>
+      </section>
+
+      {% if message %}
+      <section class="card status {{ status }}">{{ message }}</section>
+      {% endif %}
+
+      <section class="card">
+        <h2>Run log</h2>
+        <pre>{% if logs %}{% for line in logs %}{{ line }}
+{% endfor %}{% else %}No run yet.{% endif %}</pre>
+      </section>
+    </main>
+  </body>
+</html>
